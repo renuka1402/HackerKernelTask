@@ -7,7 +7,7 @@ const Layout = () => {
   const token = localStorage.getItem('token');
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    window.location.href = '/login';
     navigate('/');
   };
 

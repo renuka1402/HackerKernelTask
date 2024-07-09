@@ -1,16 +1,20 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addProduct, deleteProduct } from "../productTaskSlice";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct, deleteProduct } from '../productTaskSlice';
 
 const Product = () => {
-  const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState("");
+  const [productName, setProductName] = useState('');
+  const [productPrice, setProductPrice] = useState('');
   const [filterProducts, setFilterProducts] = useState([]);
   const [productNameError, setProductNameError] = useState(false);
   const [productPriceError, setProductPriceError] = useState(false);
 
   const dispatch = useDispatch();
   const products = useSelector((state) => state.productTask.products);
+
+  useEffect(() => {
+    window.location.href = '/'; 
+  }, []);
 
   const handleAddProduct = () => {
     if (productName.length === 0 || productPrice.length === 0) {
@@ -30,8 +34,8 @@ const Product = () => {
     dispatch(
       addProduct({ id: Date.now(), name: productName, price: productPrice })
     );
-    setProductName("");
-    setProductPrice("");
+    setProductName('');
+    setProductPrice('');
     setProductNameError(false);
     setProductPriceError(false);
   };
@@ -40,15 +44,13 @@ const Product = () => {
     dispatch(deleteProduct(productId));
   };
 
-  const productsToDisplay = filterProducts.length
-    ? filterProducts
-    : products;
+  const productsToDisplay = filterProducts.length ? filterProducts : products;
 
   let sno = 0;
   const productRows = productsToDisplay.map((product) => {
     sno++;
     return (
-      <tr  className="product-row">
+      <tr key={product.id} className="product-row">
         <td>{sno}</td>
         <td>{product.name}</td>
         <td>${product.price}</td>
@@ -76,10 +78,14 @@ const Product = () => {
           className="input-text"
           placeholder="Product Name"
           value={productName}
-          onChange={(e) => { setProductName(e.target.value); setProductNameError(false)}} />
-       
+          onChange={(e) => {
+            setProductName(e.target.value);
+            setProductNameError(false);
+          }}
+        />
+
         {productNameError && (
-          <p className="input-message" style={{ color: "red" }}>
+          <p className="input-message" style={{ color: 'red' }}>
             Please add product name.
           </p>
         )}
@@ -92,10 +98,12 @@ const Product = () => {
           value={productPrice}
           onChange={(e) => {
             setProductPrice(e.target.value);
-            setProductPriceError(false)}} />
+            setProductPriceError(false);
+          }}
+        />
 
         {productPriceError && (
-          <p className="input-message" style={{ color: "red" }}>
+          <p className="input-message" style={{ color: 'red' }}>
             Please add product price.
           </p>
         )}
@@ -104,40 +112,24 @@ const Product = () => {
           Add Product
         </button>
       </div>
-     
-          
+
       {productRows.length > 0 ? (
-       
-       <table className="project-table">
-    
+        <table className="project-table">
+          <thead>
             <tr>
               <th>S.No</th>
               <th>Product Name</th>
               <th>Product Price</th>
               <th>Delete</th>
-            
             </tr>
-            {productRows}
-            </table>
-    
-             
-          ) : (    
-   
-    
-      
-            
-            <tr>
-              <td className="no-projects" >
-                No Product found.
-              </td>
-            </tr>
-          )}
-        
-    
+          </thead>
+          <tbody>{productRows}</tbody>
+        </table>
+      ) : (
+        <p className="no-products">No products found.</p>
+      )}
     </div>
   );
 };
 
 export default Product;
- 
-
